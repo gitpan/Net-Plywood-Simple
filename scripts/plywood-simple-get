@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+use 5.006;
+use strict;
+use warnings;
+
+use Net::Plywood::Simple;
+use Getopt::Long;
+use Pod::Usage;
+use Try::Tiny;
+
+my ($file, $key, $path, $scheme, $host, $port, $help, $man);
+GetOptions(
+	'file=s'   => \$file,
+	'key=s'    => \$key,
+	'path=s'   => \$path,
+	'scheme=s' => \$scheme,
+	'host=s'   => \$host,
+	'port=s'   => \$port,
+	'help|?'   => \$help,
+	man        => \$man,
+) or die("Error in command line arguments\n");
+pod2usage(1) if $help;
+pod2usage(-exitval => 0, -verbose => 2) if $man;
+pod2usage(1) unless ($file && $key && $host && $port);
+
+my $plywood = Net::Plywood::Simple->new(
+	scheme => ($scheme || 'http'),
+	host   => $host,
+	port   => $port,
+);
+
+my @path = $path ? split('/', $path) : '';
+my $response = $plywood->get($key, @path);
+my $content  = $response->{content};
+
+open(my $json_fh, '>', $file)
+	|| die("Can't open $file: $!\n");
+
+print $json_fh $content;
+
+1;
+
+__END__
+
+=USAGE
+
+USAGE:
+
+	plywood-simple-get [options] [arguments]
+
+Examples:
+
+	plywood-simple-get --file test.json --key test123 --host localhost --port 8080 --path node/path/in/tree
+

@@ -7,7 +7,7 @@ use HTTP::Tiny;
 use Try::Tiny;
 use JSON;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 ############
 ## Public ##
@@ -34,29 +34,36 @@ sub put {
 	} catch {
 		die "could not encode tree as JSON, error was: $_";
 	};
+	my $response;
 	try {
-		HTTP::Tiny->new->put(
+		$response = HTTP::Tiny->new->put(
 			"$self->{scheme}://$self->{host}:$self->{port}/tree/$key",
 			{content => $json},
 		);
 	} catch {
 		die "could not store tree, error was: $_";
 	};
-	return 1;
+	if (!$response->{success}) {
+		die "$response->{reason} ($response->{status}): $response->{content}";
+	}
+	return $response;
 }
 
 sub get {
 	my ($self, $key, @path) = @_;
 	my $path = join('/', @path);
-	my $data;
+	my $response;
 	try {
-		$data = HTTP::Tiny->new->get(
-			"$self->{scheme}://$self->{host}:$self->{port}/tree/$key",
+		$response = HTTP::Tiny->new->get(
+			"$self->{scheme}://$self->{host}:$self->{port}/tree/$key/$path",
 		);
 	} catch {
 		die "could not get tree, error was: $_";
 	};
-	return $data;
+	if (!$response->{success}) {
+		die "$response->{reason} ($response->{status}): $response->{content}";
+	}
+	return $response;
 }
 
 1;
@@ -98,6 +105,8 @@ Retrieving data:
 		port   => 8080,
 	);
 	my $data = $plywood->get('PICKAKEY');
+	## OR
+	my $data = $plywood->get('PICKAKEY', qw/node path in data/);
 
 Just swap out scheme, host and port and you're set
 

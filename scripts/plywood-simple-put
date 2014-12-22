@@ -1,0 +1,58 @@
+#!/usr/bin/env perl
+use 5.006;
+use strict;
+use warnings;
+
+use JSON;
+use Net::Plywood::Simple;
+use Getopt::Long;
+use Pod::Usage;
+use Try::Tiny;
+
+my ($file, $key, $scheme, $host, $port, $help, $man);
+GetOptions(
+	'file=s'   => \$file,
+	'key=s'    => \$key,
+	'scheme=s' => \$scheme,
+	'host=s'   => \$host,
+	'port=s'   => \$port,
+	'help|?'   => \$help,
+	man        => \$man,
+) or die("Error in command line arguments\n");
+pod2usage(1) if $help;
+pod2usage(-exitval => 0, -verbose => 2) if $man;
+pod2usage(1) unless ($file && $key && $host && $port);
+
+open(my $json_fh, '<:encoding(UTF-8)', $file)
+	|| die("Can't open $file: $!\n");
+my $json_text = <$json_fh> || '0';
+my $json      = JSON->new;
+my $data;
+try {
+	$data = $json->decode($json_text);
+} catch {
+	die("Can't decode JSON in $file: $_\n");
+};
+
+my $plywood = Net::Plywood::Simple->new(
+	scheme => ($scheme || 'http'),
+	host   => $host,
+	port   => $port,
+);
+
+my $res = $plywood->put($key, $data);
+
+1;
+
+__END__
+
+=USAGE
+
+USAGE:
+
+	plywood-simple-put [options] [arguments]
+
+Examples:
+
+	plywood-simple-put --file test.json --key test123 --host localhost --port 8080
+
