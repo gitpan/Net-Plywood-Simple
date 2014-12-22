@@ -1,0 +1,24 @@
+---
+abstract: 'A simple Perl5 interface to the Erlang "Plywood" tree-object storage and convergence server.'
+author:
+  - 'Shane Utt (sutt@cpan.org)'
+build_requires:
+  ExtUtils::MakeMaker: '0'
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.142690'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Net-Plywood-Simple
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  HTTP::Tiny: '0.053'
+  Test::Simple: '0.44'
+  Try::Tiny: '0.22'
+version: 0.01
