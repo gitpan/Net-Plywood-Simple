@@ -1,4 +1,39 @@
-p5-net-plywood-simple
-=====================
+NAME
+    Net::Plywood::Simple - A simple interface to "Plywood", an index
+    database server
 
-A simple wrapper around "Plywood", a hierarchical data storage and retrieval server
+DESCRIPTION
+    This module is a simple wrapper around "Plywood", a hierarchical data
+    storage and retrieval database written in Erlang. The database can be
+    cloned from: https://github.com/ricecake/plywood The basic premise is to
+    store, retrieve, and search for nodes in large JSON tree structures that
+    can be merged together.
+
+SYNOPSIS
+    Storing data:
+
+            use Net::Plywood::Simple;
+            my $plywood = Net::Plywood::Simple->new(
+                    scheme => 'http',
+                    host   => 'localhost',
+                    port   => 8080,
+            );
+            my $key  = 'PICKAKEY';
+            my $data = {...}; # build your tree
+            $plywood->put($key, $data);
+
+    Retrieving data:
+
+            use Net::Plywood::Simple;
+            my $plywood = Net::Plywood::Simple->new(
+                    scheme => 'http',
+                    host   => 'localhost',
+                    port   => 8080,
+            );
+            my $data = $plywood->get('PICKAKEY');
+
+    Just swap out scheme, host and port and you're set
+
+AUTHOR
+    Shane Utt - sutt@cpan.org
+

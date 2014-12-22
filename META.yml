@@ -21,4 +21,4 @@ requires:
   HTTP::Tiny: '0.053'
   Test::Simple: '0.44'
   Try::Tiny: '0.22'
-version: 0.01
+version: 0.02

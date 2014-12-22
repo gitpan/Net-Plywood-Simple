@@ -7,7 +7,7 @@ use HTTP::Tiny;
 use Try::Tiny;
 use JSON;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 ############
 ## Public ##
@@ -17,7 +17,7 @@ sub new {
 	my $class  = shift;
 	my $params = ref($_[0]) ? $_[0] : {@_};
 	if (!$params->{scheme} || !$params->{host} || !$params->{port}) {
-		die "argments 'scheme', 'host' and 'port' are required";
+		die "arguments 'scheme', 'host' and 'port' are required";
 	}
 	$params->{_json} = JSON->new->utf8;
 	return bless($params, $class);
@@ -80,7 +80,7 @@ tree structures that can be merged together.
 Storing data:
 
 	use Net::Plywood::Simple;
-	my $plywood = Net::Plywood::Simple(
+	my $plywood = Net::Plywood::Simple->new(
 		scheme => 'http',
 		host   => 'localhost',
 		port   => 8080,
@@ -92,7 +92,7 @@ Storing data:
 Retrieving data:
 
 	use Net::Plywood::Simple;
-	my $plywood = Net::Plywood::Simple(
+	my $plywood = Net::Plywood::Simple->new(
 		scheme => 'http',
 		host   => 'localhost',
 		port   => 8080,
